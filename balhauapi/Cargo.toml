@@ -1,0 +1,6 @@
+[package]
+name = "balhauapi"
+version = "0.1.0"
+authors = ["Balhau <balhau@balhau.net>"]
+
+[dependencies]
