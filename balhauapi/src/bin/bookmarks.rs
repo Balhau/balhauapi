@@ -12,7 +12,7 @@ Examples:
         bookmarks load -t chrome bookmarks.html
 
 "
-)
+        )
         .arg(Arg::with_name("Config")
             .help("Set the configuration file for bookmarks-cli")
             .takes_value(true)
@@ -43,13 +43,13 @@ Examples:
     //Validate load command
     if matches.is_present("load") {
         if !matches.is_present("input") {
-            println! ("You should provide an input file, type <command> help for more information");
+            println!("You should provide an input file, type <command> help for more information");
         }
-        if !matches.is_present("type"){
+        if !matches.is_present("type") {
             println!("You should provide the type of bookmark to process, type <command> help for more information");
         }
-    }else{  // Change this as soon as more commands are implemented
+    } else {
+        // Change this as soon as more commands are implemented
         println!("At the moment only load command is available, type <command> help for more information ");
     }
-
 }
