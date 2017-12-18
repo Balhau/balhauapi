@@ -13,8 +13,8 @@ pub struct Post {
 use super::schema::blog_posts;
 
 #[derive(Insertable)]
-#[table_name="blog_posts"]
-pub struct NewPost<'a>{
+#[table_name = "blog_posts"]
+pub struct NewPost<'a> {
     pub title: &'a str,
     pub body: &'a str,
     pub post_created: &'a SystemTime,

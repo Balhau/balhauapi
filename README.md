@@ -19,5 +19,10 @@ Could we develop the backend in python, java, nodejs, ruby or go? Definitely but
 For more information on performance information you can [check this](http://benchmarksgame.alioth.debian.org/u64q/rust.html).
 
 
-## Now, so what?
+## Services
+
+In the near (hopefully) future this component will replace some tolling done previously in python and, eventually, java.
+
+* We got a previous python pip package that was a microservice responsible to automate some tasks defined as REST API. As example of services were the download of media from youtube, by using youtube-dl as the backend. This is being ported to rust (just a process launcher exposed as a service) 
+* We got some content we need to ingest. Some tooling on ereader interaction and bookmarks management. This is being developed here also
 

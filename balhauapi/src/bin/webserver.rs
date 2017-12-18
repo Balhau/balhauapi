@@ -33,7 +33,7 @@ struct About {
 impl<'r> Responder<'r> for About {
     fn respond_to(self, _: &Request) -> Result<'r> {
         Response::build()
-            .sized_body(Cursor::new(format!("{}",serde_json::to_string(&self).unwrap())))
+            .sized_body(Cursor::new(format!("{}", serde_json::to_string(&self).unwrap())))
             .raw_header("Access-Control-Allow-Origin", String::from("*"))
             //.header(ContentType::new("application", "application/json"))
             .ok()
@@ -43,11 +43,11 @@ impl<'r> Responder<'r> for About {
 #[get("/about")]
 fn get_about() -> About {
     //Json(vec![t1,t2])
-    let t1 = About{
-        name : String::from("Kie"),
+    let t1 = About {
+        name: String::from("Kie"),
         email: String::from("bruce@wayne.com"),
-        country : String::from("Tugings"),
-        desc : String::from("Long, long, time ago... a big and tedious description follows"),
+        country: String::from("Tugings"),
+        desc: String::from("Long, long, time ago... a big and tedious description follows"),
         address: String::from("221b Baker Street")
     };
 

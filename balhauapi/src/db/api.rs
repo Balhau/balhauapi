@@ -7,7 +7,7 @@ use std::env;
 use std::time::SystemTime;
 use diesel;
 
-const DATABASE_URL : &str = "DATABASE_URL";
+const DATABASE_URL: &str = "DATABASE_URL";
 
 pub fn create_conn() -> PgConnection {
     dotenv().ok();
@@ -19,14 +19,14 @@ pub fn create_conn() -> PgConnection {
         .expect(&format!("Error connecting to {}", database_url))
 }
 
-pub fn create_post<'a>(conn : &PgConnection, title :&'a str, body :&'a str) -> Post {
+pub fn create_post<'a>(conn: &PgConnection, title: &'a str, body: &'a str) -> Post {
     use db::blog::schema::blog_posts;
 
     let new_post = NewPost {
-        title : title,
-        body : body,
-        post_created : &SystemTime::now(),
-        post_updated : &SystemTime::now(),
+        title: title,
+        body: body,
+        post_created: &SystemTime::now(),
+        post_updated: &SystemTime::now(),
     };
 
     diesel::insert_into(blog_posts::table)

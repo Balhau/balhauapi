@@ -2,7 +2,7 @@ use super::Downloadable;
 use std::process::Command;
 
 pub struct YoutubeDownloader {
-    pub url : String,
+    pub url: String,
     pub path: String
 }
 
@@ -11,10 +11,10 @@ pub struct YoutubeDownloader {
 */
 impl Downloadable<bool> for YoutubeDownloader {
     fn download(&self) -> bool {
-        println!("Fetching video: {} into {}",self.url,self.path);
+        println!("Fetching video: {} into {}", self.url, self.path);
 
         let mut command = "".to_string();
-        let splited : Vec<&str> = self.url.split("&").collect();
+        let splited: Vec<&str> = self.url.split("&").collect();
         let parsed_url = splited.get(0).unwrap();
 
         command.push_str("cd ");
@@ -30,7 +30,7 @@ impl Downloadable<bool> for YoutubeDownloader {
             .output().expect(&self.url);
         //Print command executed
         println!("Command executed: {}", command);
-        println!("Result: {:?}",output.stdout);
+        println!("Result: {:?}", output.stdout);
         true
     }
 }
