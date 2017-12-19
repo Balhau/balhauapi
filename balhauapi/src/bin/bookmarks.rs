@@ -29,7 +29,7 @@ bookmarks-cli is a command line interface for bookmarks management.
 Examples:
 
     Load a list of bookmarks from google chrome
-        bookmarks load -t chrome bookmarks.html
+        bookmarks save -t chrome bookmarks.html
 
 "
         )
