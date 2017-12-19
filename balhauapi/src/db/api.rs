@@ -30,7 +30,7 @@ pub fn save_bookmark<'a>(
 ) {
     use db::schema::bookmarks;
 
-    let new_bookmark = NewBookmark{
+    let new_bookmark = NewBookmark {
         title: title,
         b64icon: b64icon,
         url: url,

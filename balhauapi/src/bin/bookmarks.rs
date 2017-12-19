@@ -85,7 +85,7 @@ Examples:
             for entry in item.find(Name("a")) {
                 let href = entry.attr("href").unwrap();
                 let date_str = entry.attr("add_date").unwrap();
-                let date=SystemTime::from(date_str.parse::<i32>().unwrap());
+                let date = SystemTime::from(date_str.parse::<i32>().unwrap());
                 let b64icon = entry.attr("icon").get_or_insert("");
                 let desc = entry.inner_html();
 
@@ -97,10 +97,9 @@ Examples:
                     date
                 );
 
-                println!("{:?}",bookmark);
+                println!("{:?}", bookmark);
             }
         }
-
     }
 
     std::process::exit(0);
