@@ -1,10 +1,30 @@
 extern crate clap;
+extern crate select;
+extern crate balhauapi;
 
 use clap::{App, Arg, SubCommand};
+use std::fs::File;
+use std::io::prelude::*;
+
+use select::document::Document;
+use select::predicate::Name;
+use std::time::SystemTime;
+use balhauapi::db::api::*;
+
+fn read_bookmark_file_chrome(path: &str) -> String {
+    let mut f = File::open(path).expect("File not found");
+
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
+        .expect("Error reading the file");
+
+    contents
+}
 
 fn main() {
     let matches = App::new("Bookmarks-cli")
-        .about("\nbookmarks-cli is a command line interface for bookmarks management.
+        .about("
+bookmarks-cli is a command line interface for bookmarks management.
 
 Examples:
 
@@ -20,14 +40,14 @@ Examples:
             .long("config")
         )
         .subcommand(
-            SubCommand::with_name("load")
-                .about("Load bookmarks into database")
+            SubCommand::with_name("save")
+                .about("Save bookmarks into database")
                 .version("1.0")
                 .author("Balhau (balhau@balhau.net")
                 .arg(Arg::with_name("input")
-                    .help("The bookmark file to consume ")
-                    .required(true)
-                    .index(1)
+                         .help("The bookmark file to consume ")
+                         .required(true)
+                     //.index(2)
                 )
                 .arg(
                     Arg::with_name("type")
@@ -40,16 +60,48 @@ Examples:
                 )
         ).get_matches();
 
-    //Validate load command
-    if matches.is_present("load") {
-        if !matches.is_present("input") {
-            println!("You should provide an input file, type <command> help for more information");
-        }
-        if !matches.is_present("type") {
-            println!("You should provide the type of bookmark to process, type <command> help for more information");
-        }
+    //Validate save command
+    if matches.is_present("save") {
+        //Process command no need for
     } else {
         // Change this as soon as more commands are implemented
-        println!("At the moment only load command is available, type <command> help for more information ");
+        println!("At the moment only <save> command is available, type help for more information ");
+        std::process::exit(1);
     }
+
+    if let Some(ref subcommand_matches) = matches.subcommand_matches("save") {
+        let conn = create_conn();
+        let input_path: &str = subcommand_matches.args.get("input").unwrap().vals[0].to_str().unwrap();
+        let bookmark_type: &str = subcommand_matches.args.get("type").unwrap().vals[0].to_str().unwrap();
+        //Process load command
+        println!("Saving bookmarks {} from {}",
+                 input_path,
+                 bookmark_type);
+
+        let html: String = read_bookmark_file_chrome(input_path);
+
+        for item in Document::from(html.as_str()).find(Name("dt")) {
+            //Process bookmark entry
+            for entry in item.find(Name("a")) {
+                let href = entry.attr("href").unwrap();
+                let date_str = entry.attr("add_date").unwrap();
+                let date=SystemTime::from(date_str.parse::<i32>().unwrap());
+                let b64icon = entry.attr("icon").get_or_insert("");
+                let desc = entry.inner_html();
+
+                let bookmark = save_bookmark(
+                    conn,
+                    desc,
+                    b64icon,
+                    href,
+                    date
+                );
+
+                println!("{:?}",bookmark);
+            }
+        }
+
+    }
+
+    std::process::exit(0);
 }

@@ -10,7 +10,7 @@ pub struct Post {
     pub published: bool,
 }
 
-use super::schema::blog_posts;
+use super::super::schema::blog_posts;
 
 #[derive(Insertable)]
 #[table_name = "blog_posts"]
