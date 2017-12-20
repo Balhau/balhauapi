@@ -4,6 +4,7 @@ use super::schema::*;
 
 use diesel::prelude::*;
 use dotenv::dotenv;
+use diesel::pg::PgConnection;
 use std::env;
 use std::time::SystemTime;
 use diesel;
@@ -20,6 +21,14 @@ pub fn create_conn() -> PgConnection {
         .expect(&format!("Error connecting to {}", database_url))
 }
 
+pub fn get_all_bookmarks(conn : &PgConnection) -> Bookmarks {
+    use db::schema::bookmarks;
+    use db::schema::bookmarks::dsl::*;
+    Bookmarks {
+        bookmarks : bookmarks::table.load(&*conn).unwrap()
+    }
+}
+
 // Save bookmark into database
 pub fn save_bookmark<'a>(
     conn: &PgConnection,
@@ -27,7 +36,7 @@ pub fn save_bookmark<'a>(
     b64icon: &'a str,
     url: &'a str,
     created: &SystemTime,
-) {
+) -> Bookmark {
     use db::schema::bookmarks;
 
     let new_bookmark = NewBookmark {

@@ -1,19 +1,25 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
-
+extern crate diesel;
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
+extern crate balhauapi;
 extern crate rocket;
 
-//use rocket::http::ContentType;
+use rocket::http::ContentType;
 use rocket::response::Response;
 use rocket::request::Request;
 use rocket::response::Result;
 use rocket::response::Responder;
 use std::io::Cursor;
+use diesel::query_dsl::load_dsl::LoadDsl;
+
+use balhauapi::db::api::*;
+use balhauapi::db::schema::*;
+use balhauapi::db::bookmarks::models::Bookmark;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -22,7 +28,7 @@ fn index() -> &'static str {
 
 
 #[derive(Serialize, Deserialize)]
-struct About {
+pub struct About {
     name: String,
     email: String,
     country: String,
@@ -30,18 +36,14 @@ struct About {
     address: String
 }
 
-impl<'r> Responder<'r> for About {
-    fn respond_to(self, _: &Request) -> Result<'r> {
-        Response::build()
-            .sized_body(Cursor::new(format!("{}", serde_json::to_string(&self).unwrap())))
-            .raw_header("Access-Control-Allow-Origin", String::from("*"))
-            //.header(ContentType::new("application", "application/json"))
-            .ok()
-    }
+#[get("/bookmarks")]
+fn get_bookmarks() -> String {
+    let conn = create_conn();
+    serde_json::to_string(&get_all_bookmarks(&conn)).unwrap()
 }
 
 #[get("/about")]
-fn get_about() -> About {
+fn get_about() -> String {
     //Json(vec![t1,t2])
     let t1 = About {
         name: String::from("Kie"),
@@ -51,14 +53,17 @@ fn get_about() -> About {
         address: String::from("221b Baker Street")
     };
 
-    t1
+    serde_json::to_string(&t1).unwrap()
 }
 
 fn main() {
     let routes = routes![
         index,
-        get_about
+        get_about,
+        get_bookmarks
     ];
 
-    rocket::ignite().mount("/", routes).launch();
+    rocket::ignite()
+        .mount("/", routes)
+        .launch();
 }

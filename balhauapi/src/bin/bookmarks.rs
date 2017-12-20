@@ -9,6 +9,8 @@ use std::io::prelude::*;
 use select::document::Document;
 use select::predicate::Name;
 use std::time::SystemTime;
+use std::time::Duration;
+use std::time::UNIX_EPOCH;
 use balhauapi::db::api::*;
 
 fn read_bookmark_file_chrome(path: &str) -> String {
@@ -85,19 +87,20 @@ Examples:
             for entry in item.find(Name("a")) {
                 let href = entry.attr("href").unwrap();
                 let date_str = entry.attr("add_date").unwrap();
-                let date = SystemTime::from(date_str.parse::<i32>().unwrap());
-                let b64icon = entry.attr("icon").get_or_insert("");
+                let duration = date_str.parse::<u64>().unwrap();
+                let date: SystemTime = UNIX_EPOCH + Duration::from_secs(duration);
+                let b64icon : &str = entry.attr("icon").get_or_insert("");
                 let desc = entry.inner_html();
 
                 let bookmark = save_bookmark(
-                    conn,
-                    desc,
-                    b64icon,
-                    href,
-                    date
+                    &conn,
+                    &desc,
+                    &b64icon,
+                    &href,
+                    &date
                 );
 
-                println!("{:?}", bookmark);
+                println!("Saved Bookmark: {:?}", bookmark);
             }
         }
     }
