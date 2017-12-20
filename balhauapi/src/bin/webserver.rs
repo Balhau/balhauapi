@@ -14,12 +14,16 @@ use rocket::response::Response;
 use rocket::request::Request;
 use rocket::response::Result;
 use rocket::response::Responder;
+use rocket::http::Method;
+use rocket::fairing::AdHoc;
+
+
 use std::io::Cursor;
-use diesel::query_dsl::load_dsl::LoadDsl;
 
 use balhauapi::db::api::*;
 use balhauapi::db::schema::*;
 use balhauapi::db::bookmarks::models::Bookmark;
+
 
 #[get("/")]
 fn index() -> &'static str {
@@ -57,6 +61,7 @@ fn get_about() -> String {
 }
 
 fn main() {
+
     let routes = routes![
         index,
         get_about,
@@ -65,5 +70,8 @@ fn main() {
 
     rocket::ignite()
         .mount("/", routes)
+        .attach(AdHoc::on_response(|_,resp|{
+            resp.set_raw_header("Access-Control-Allow-Origin","*");
+        }))
         .launch();
 }
