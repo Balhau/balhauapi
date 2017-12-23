@@ -33,14 +33,14 @@ pub fn get_all_bookmarks(conn : &PgConnection) -> Bookmarks {
     }
 }
 
-pub fn get_bookmarks_paged(conn : &PgConnection, startId : i32, max : i64 ) -> Bookmarks {
+pub fn get_bookmarks_paged(conn : &PgConnection, startId : i64, max : i64 ) -> Bookmarks {
     use db::schema::bookmarks;
     use db::schema::bookmarks::dsl::*;
 
     Bookmarks{
         bookmarks : bookmarks::table
-            .filter(id.gt(startId))
             .limit(max)
+            .offset(startId)
             .load(conn).unwrap()
     }
 }

@@ -47,10 +47,10 @@ fn get_bookmarks() -> String {
     serde_json::to_string(&get_all_bookmarks(&conn)).unwrap()
 }
 
-#[get("/bookmarks/<startid>/<max_page>")]
-fn get_bookmarks_by_page(startid : i32,max_page : i64) -> String {
+#[get("/bookmarks/<page>/<max_page>")]
+fn get_bookmarks_by_page(page : i64,max_page : i64) -> String {
     let conn = create_conn();
-    serde_json::to_string(&get_bookmarks_paged(&conn,startid,max_page)).unwrap()
+    serde_json::to_string(&get_bookmarks_paged(&conn,page*max_page,max_page)).unwrap()
 }
 
 #[get("/about")]
