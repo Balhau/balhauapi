@@ -2,6 +2,8 @@ use super::blog::models::*;
 use super::bookmarks::models::*;
 use super::schema::*;
 
+
+
 use diesel::prelude::*;
 use dotenv::dotenv;
 use diesel::pg::PgConnection;
@@ -10,6 +12,8 @@ use std::time::SystemTime;
 use diesel;
 
 const DATABASE_URL: &str = "DATABASE_URL";
+const LIMIT_ROWS : i32 = 10;
+
 
 pub fn create_conn() -> PgConnection {
     dotenv().ok();
@@ -26,6 +30,18 @@ pub fn get_all_bookmarks(conn : &PgConnection) -> Bookmarks {
     use db::schema::bookmarks::dsl::*;
     Bookmarks {
         bookmarks : bookmarks::table.load(&*conn).unwrap()
+    }
+}
+
+pub fn get_bookmarks_paged(conn : &PgConnection, startId : i32, max : i64 ) -> Bookmarks {
+    use db::schema::bookmarks;
+    use db::schema::bookmarks::dsl::*;
+
+    Bookmarks{
+        bookmarks : bookmarks::table
+            .filter(id.gt(startId))
+            .limit(max)
+            .load(conn).unwrap()
     }
 }
 
@@ -67,4 +83,3 @@ pub fn create_post<'a>(conn: &PgConnection, title: &'a str, body: &'a str) -> Po
         .get_result(conn)
         .expect("Error saving new post")
 }
-

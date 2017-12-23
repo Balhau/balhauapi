@@ -16,6 +16,7 @@ use rocket::response::Result;
 use rocket::response::Responder;
 use rocket::http::Method;
 use rocket::fairing::AdHoc;
+use diesel::pg::PgConnection;
 
 
 use std::io::Cursor;
@@ -46,6 +47,12 @@ fn get_bookmarks() -> String {
     serde_json::to_string(&get_all_bookmarks(&conn)).unwrap()
 }
 
+#[get("/bookmarks/<startid>/<max_page>")]
+fn get_bookmarks_by_page(startid : i32,max_page : i64) -> String {
+    let conn = create_conn();
+    serde_json::to_string(&get_bookmarks_paged(&conn,startid,max_page)).unwrap()
+}
+
 #[get("/about")]
 fn get_about() -> String {
     //Json(vec![t1,t2])
@@ -65,7 +72,8 @@ fn main() {
     let routes = routes![
         index,
         get_about,
-        get_bookmarks
+        get_bookmarks,
+        get_bookmarks_by_page
     ];
 
     rocket::ignite()
