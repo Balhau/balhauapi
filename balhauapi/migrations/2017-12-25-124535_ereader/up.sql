@@ -1,13 +1,21 @@
 -- Your SQL goes here
 CREATE TABLE T_AUTHOR (
-  id_author INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_author INTEGER PRIMARY KEY,
   f_id_author INTEGER,
   f_name TEXT,
   f_country TEXT
 );
 
+CREATE TABLE T_DIRECTORY (
+ id_dir INTEGER PRIMARY KEY,
+ f_id_dir INTEGER,
+ f_path TEXT NOT NULL,
+ f_isclouddir INTEGER DEFAULT 0
+);
+
+
 CREATE TABLE T_ITEM (
-  id_item INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_item INTEGER PRIMARY KEY,
   f_id_item INTEGER,
   f_etag TEXT,
   f_item_fileformat INTEGER,
@@ -36,6 +44,5 @@ CREATE TABLE T_ITEM (
   f_isvalid INTEGER default 1, f_cf1 TEXT,
   f_cf2 TEXT, f_coverisvalid INTEGER default 1,
   f_islastpage INTEGER default 0,
-  f_preorder_date INTEGER, -- le fichier est corrompu mettre � z�ro.
-  FOREIGN KEY(f_id_dir) REFERENCES T_DIRECTORY(f_id_dir) ON DELETE CASCADE
+  f_preorder_date INTEGER -- le fichier est corrompu mettre � z�ro.
 );
