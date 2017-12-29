@@ -35,6 +35,8 @@ Examples:
 
 "
         )
+        .author("Balhau <balhau@balhau.net>")
+        .version("0.1")
         .arg(Arg::with_name("Config")
             .help("Set the configuration file for bookmarks-cli")
             .takes_value(true)

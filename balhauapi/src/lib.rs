@@ -1,4 +1,4 @@
-#![recursion_limit="128"]
+#![recursion_limit="2048"]
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate diesel_infer_schema;
 #[macro_use] extern crate serde_derive;
