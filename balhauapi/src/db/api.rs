@@ -1,7 +1,6 @@
 use super::blog::models::*;
 use super::bookmarks::models::*;
 use super::ereader::models::*;
-use super::schema::*;
 
 
 
@@ -13,7 +12,7 @@ use std::time::SystemTime;
 use diesel;
 
 const DATABASE_URL: &str = "DATABASE_URL";
-const LIMIT_ROWS : i32 = 10;
+const LIMIT_ROWS : i64 = 100;
 
 
 pub fn create_conn() -> PgConnection {
@@ -28,20 +27,20 @@ pub fn create_conn() -> PgConnection {
 
 pub fn get_all_bookmarks(conn : &PgConnection) -> Bookmarks {
     use db::schema::bookmarks;
-    use db::schema::bookmarks::dsl::*;
     Bookmarks {
         bookmarks : bookmarks::table.load(&*conn).unwrap()
     }
 }
 
-pub fn get_bookmarks_paged(conn : &PgConnection, startId : i64, max : i64 ) -> Bookmarks {
+pub fn get_bookmarks_paged(conn : &PgConnection, start_id : i64, max : i64 ) -> Bookmarks {
     use db::schema::bookmarks;
-    use db::schema::bookmarks::dsl::*;
+
+    let max_rows = if max > LIMIT_ROWS {LIMIT_ROWS} else {max};
 
     Bookmarks{
         bookmarks : bookmarks::table
-            .limit(max)
-            .offset(startId)
+            .limit(max_rows)
+            .offset(start_id)
             .load(conn).unwrap()
     }
 }
@@ -49,8 +48,6 @@ pub fn get_bookmarks_paged(conn : &PgConnection, startId : i64, max : i64 ) -> B
 pub fn save_ereader_item<'a>(conn : &PgConnection, item: &'a Item) -> Item {
 
     use db::schema::ereaderitem;
-
-    let cena = item;
 
     let pubdate = item.f_publication_date.clone().unwrap_or(String::from(""));
     let publisher = item.f_publisher.clone().unwrap_or(String::from(""));

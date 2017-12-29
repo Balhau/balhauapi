@@ -3,9 +3,7 @@ extern crate select;
 extern crate balhauapi;
 extern crate rusqlite;
 
-use clap::{App, Arg, SubCommand};
-use std::fs::File;
-use std::io::prelude::*;
+use clap::App;//, Arg, SubCommand};
 use rusqlite::Connection;
 use balhauapi::db::ereader::models::Item;
 use balhauapi::db::api::save_ereader_item;
@@ -55,4 +53,6 @@ Examples:
         save_ereader_item(&conn,&item);
         println! ("Found book {:?}",&item);
     }
+
+    println!("{:?}",matches.usage.unwrap())
 }

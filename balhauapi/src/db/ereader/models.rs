@@ -1,5 +1,4 @@
 use super::super::schema::ereaderitem;
-use super::super::schema::ereaderauthor;
 
 #[derive(Queryable,Debug,Serialize,Deserialize)]
 pub struct Author{
