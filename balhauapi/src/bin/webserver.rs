@@ -9,22 +9,9 @@ extern crate serde_derive;
 extern crate balhauapi;
 extern crate rocket;
 
-use rocket::http::ContentType;
-use rocket::response::Response;
-use rocket::request::Request;
-use rocket::response::Result;
-use rocket::response::Responder;
-use rocket::http::Method;
 use rocket::fairing::AdHoc;
-use diesel::pg::PgConnection;
-
-
-use std::io::Cursor;
 
 use balhauapi::db::api::*;
-use balhauapi::db::schema::*;
-use balhauapi::db::bookmarks::models::Bookmark;
-
 
 #[get("/")]
 fn index() -> &'static str {
