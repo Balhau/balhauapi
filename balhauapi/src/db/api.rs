@@ -1,5 +1,6 @@
 use super::blog::models::*;
 use super::bookmarks::models::*;
+use super::ereader::models::*;
 use super::schema::*;
 
 
@@ -45,6 +46,35 @@ pub fn get_bookmarks_paged(conn : &PgConnection, startId : i64, max : i64 ) -> B
     }
 }
 
+pub fn save_ereader_item<'a>(conn : &PgConnection, item: &'a Item) -> Item {
+
+    use db::schema::ereaderitem;
+
+    let cena = item;
+
+    let pubdate = item.f_publication_date.clone().unwrap_or(String::from(""));
+    let publisher = item.f_publisher.clone().unwrap_or(String::from(""));
+    let title = item.f_title.clone().unwrap_or(String::from(""));
+    let description = item.f_description.clone().unwrap_or(String::from(""));
+
+    let new_item = NewItem{
+        f_id_item: item.f_author_id.clone().unwrap_or(0),
+        f_pages_number: item.f_pages_number.unwrap_or(0),
+        f_current_page: item.f_current_page.unwrap_or(0),
+        f_last_read: item.f_last_read.unwrap_or(0),
+        f_publication_date: &pubdate,
+        f_publisher: &publisher,
+        f_title: &title,
+        f_description: &description,
+        f_author_id: item.f_author_id.unwrap_or(0)
+    };
+
+    diesel::insert_into(ereaderitem::table)
+        .values(&new_item)
+        .get_result(conn)
+        .expect("Error saving bookmark")
+}
+
 // Save bookmark into database
 pub fn save_bookmark<'a>(
     conn: &PgConnection,
@@ -56,10 +86,10 @@ pub fn save_bookmark<'a>(
     use db::schema::bookmarks;
 
     let new_bookmark = NewBookmark {
-        title: title,
-        b64icon: b64icon,
-        url: url,
-        created: created
+        title,
+        b64icon,
+        url,
+        created
     };
 
     diesel::insert_into(bookmarks::table)
@@ -72,8 +102,8 @@ pub fn create_post<'a>(conn: &PgConnection, title: &'a str, body: &'a str) -> Po
     use db::schema::blog_posts;
 
     let new_post = NewPost {
-        title: title,
-        body: body,
+        title,
+        body,
         post_created: &SystemTime::now(),
         post_updated: &SystemTime::now(),
     };
