@@ -1,4 +1,5 @@
 extern crate balhauapi;
+extern crate serde_yaml;
 
 use balhauapi::downloader::youtube::YoutubeDownloader;
 use balhauapi::downloader::Downloadable;

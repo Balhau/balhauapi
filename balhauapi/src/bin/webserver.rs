@@ -10,8 +10,10 @@ extern crate balhauapi;
 extern crate rocket;
 
 use rocket::fairing::AdHoc;
+use rocket::config::{Config, Environment};
 
 use balhauapi::db::api::*;
+use balhauapi::confs::load_app_configuration;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -56,6 +58,10 @@ fn get_about() -> String {
 
 fn main() {
 
+    let app_conf = load_app_configuration();
+
+    println! ("Configurations: {:?}",&app_conf);
+
     let routes = routes![
         index,
         get_about,
@@ -63,7 +69,20 @@ fn main() {
         get_bookmarks_by_page
     ];
 
-    rocket::ignite()
+    let env_type : Environment = match app_conf.configs.webserver.env.as_str() {
+        "prod"  => Environment::Production,
+        _       => Environment::Staging
+    };
+
+
+
+    let rocket_config = Config::build(env_type)
+        .address(app_conf.configs.webserver.binding_host)
+        .port(app_conf.configs.webserver.port)
+        .finalize().expect("Error building webserver configuration object");
+
+
+    rocket::custom(rocket_config,app_conf.configs.webserver.log)
         .mount("/", routes)
         .attach(AdHoc::on_response(|_,resp|{
             resp.set_raw_header("Access-Control-Allow-Origin","*");

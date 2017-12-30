@@ -8,6 +8,7 @@ use rusqlite::Connection;
 use balhauapi::db::ereader::models::Item;
 use balhauapi::db::api::save_ereader_item;
 use balhauapi::db::api::create_conn;
+use balhauapi::db::api::truncate_ereaderitem_table;
 
 
 fn main() {
@@ -29,6 +30,8 @@ Examples:
 
     let mut stmt = conn.prepare("SELECT * from T_ITEM;").unwrap();
 
+
+
     let sel_iter = stmt.query_map(
         &[],| row | {
             Item{
@@ -47,6 +50,8 @@ Examples:
     ).unwrap();
 
     let conn = create_conn();
+
+    truncate_ereaderitem_table(&conn);
 
     for book in sel_iter {
         let item = book.unwrap();

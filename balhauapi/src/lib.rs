@@ -8,5 +8,6 @@ extern crate dotenv;
 
 pub mod db;
 pub mod downloader;
+pub mod confs;
 
 

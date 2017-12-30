@@ -45,6 +45,11 @@ pub fn get_bookmarks_paged(conn : &PgConnection, start_id : i64, max : i64 ) -> 
     }
 }
 
+pub fn truncate_ereaderitem_table(conn : &PgConnection) {
+    use db::schema::ereaderitem;
+    let res = diesel::delete(ereaderitem::table).execute(conn);
+}
+
 pub fn save_ereader_item<'a>(conn : &PgConnection, item: &'a Item) -> Item {
 
     use db::schema::ereaderitem;
