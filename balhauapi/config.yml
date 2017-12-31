@@ -1,6 +1,10 @@
-#BalhauAPI application configuration file
 ---
 configs:
+  remotes:
+      - name: The Remote Name
+        host: <hostname> //--> 192.168.1.169:122
+        user: <ssh_user>
+        pass: <ssh_password>
   webserver:
     binding_host: 0.0.0.0
     port: 5000
@@ -10,7 +14,7 @@ configs:
     hostname: 192.168.1.14
     schema: postgres
     port: 5432
-    user: postgres
-    pass: postgres
+    user: <posgres_user>
+    pass: <posgres_password>
   folders:
-    mediafolder: /tmp/lolada
+    mediafolder: /tmp/whynot

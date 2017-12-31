@@ -6,11 +6,20 @@ use std::fs::File;
 use std::io::prelude::*;
 
 
-const CONFIG_FILE_ENV : &str = "CONFIG_FILE_ENV";
+const CONFIG_FILE_ENV: &str = "CONFIG_FILE_ENV";
+
+//Ssh Context needed for ssh command execution
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct SshContext {
+    pub name: String,
+    pub host: String,
+    pub user: String,
+    pub pass: String
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct WebServer{
-    pub binding_host : String,
+pub struct WebServer {
+    pub binding_host: String,
     pub port: u16,
     pub log: bool,
     pub env: String,
@@ -27,15 +36,15 @@ pub struct Database {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Folders {
-    pub mediafolder : String
+    pub mediafolder: String
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BalhauApiConf {
+    pub remotes : Vec<SshContext>,
     pub webserver: WebServer,
-    pub database : Database,
-    pub folders : Folders
-
+    pub database: Database,
+    pub folders: Folders
 }
 
 
@@ -50,7 +59,7 @@ pub struct AppConfig {
 pub fn load_app_configuration() -> AppConfig {
     dotenv().ok();
     let config_path = dotenv::var(CONFIG_FILE_ENV)
-        .expect("Configuration environment variable not found",);
+        .expect("Configuration environment variable not found");
 
     let mut f = File::open(config_path).expect("file not found");
 

@@ -26,3 +26,35 @@ In the near (hopefully) future this component will replace some tolling done pre
 * We got a previous python pip package that was a microservice responsible to automate some tasks defined as REST API. As example of services were the download of media from youtube, by using youtube-dl as the backend. This is being ported to rust (just a process launcher exposed as a service) 
 * We got some content we need to ingest. Some tooling on ereader interaction and bookmarks management. This is being developed here also
 
+
+
+## Automation
+
+Some automation routines were implemented as a web service call. For instance to reboot some
+network host that is registered under remotes in the configuration yaml file
+
+    ---
+    configs:
+      remotes:
+          - name: The Remote Name
+            host: <hostname> //--> 192.168.1.169:122
+            user: <ssh_user>
+            pass: <ssh_password>
+      webserver:
+        binding_host: 0.0.0.0
+        port: 5000
+        log: false
+        env: prod
+      database:
+        hostname: 192.168.1.14
+        schema: postgres
+        port: 5432
+        user: <posgres_user>
+        pass: <posgres_password>
+      folders:
+        mediafolder: /tmp/whynot
+
+
+You can do something like this
+    
+    curl -H "Content-Type: application/json" -X POST -d '{ "host" : "pi1" }' http://localhost:5000/automation/reboot
