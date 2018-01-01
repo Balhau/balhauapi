@@ -19,21 +19,11 @@ Could we develop the backend in python, java, nodejs, ruby or go? Definitely but
 For more information on performance information you can [check this](http://benchmarksgame.alioth.debian.org/u64q/rust.html).
 
 
-## Services
+## General Configuration
 
-In the near (hopefully) future this component will replace some tolling done previously in python and, eventually, java.
+You need to define a configuration yaml file as the following
 
-* We got a previous python pip package that was a microservice responsible to automate some tasks defined as REST API. As example of services were the download of media from youtube, by using youtube-dl as the backend. This is being ported to rust (just a process launcher exposed as a service) 
-* We got some content we need to ingest. Some tooling on ereader interaction and bookmarks management. This is being developed here also
-
-
-
-## Automation
-
-Some automation routines were implemented as a web service call. For instance to reboot some
-network host that is registered under remotes in the configuration yaml file
-
-    ---
+---
     configs:
       remotes:
           - name: The Remote Name
@@ -55,6 +45,34 @@ network host that is registered under remotes in the configuration yaml file
         mediafolder: /tmp/whynot
 
 
-You can do something like this
+at the same time the environment variable point to this file should be defined
+
+    CONFIG_FILE_ENV=<path_for_yaml_file>
     
-    curl -H "Content-Type: application/json" -X POST -d '{ "host" : "pi1" }' http://localhost:5000/automation/reboot
+   
+You got more information about the setup on a [container setup](https://github.com/Balhau/kuber/blob/master/apps/balhauapi/Dockerfile) made for this.
+
+
+
+## Overall structure
+
+This component can be divided in three distinct parts.
+
+   * Reusable code that is expected to live inside the **libbalhauapi.rlib**
+   * Set of command line programs that are responsible for a set of routines for ingesting data
+   * An executable program that is a rocket based webserver that will expose a set of features as a
+   microservice
+   
+    
+
+
+
+### API
+
+The services currently enabled by the weserver are defined bellow 
+
+  * Reboot a host
+  
+        curl -H "Content-Type: application/json" -X POST -d '{ "host" : "pi1" }' http://localhost:5000/automation/reboot
+    
+    
