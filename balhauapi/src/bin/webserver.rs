@@ -14,6 +14,8 @@ use rocket::fairing::AdHoc;
 use rocket_contrib::Json;
 use rocket::config::{Config, Environment};
 
+use balhauapi::downloader::youtube::YoutubeDownloader;
+use balhauapi::downloader::Downloadable;
 use balhauapi::db::api::*;
 use balhauapi::confs::AppConfig;
 use balhauapi::automation::remotecommand::reboot_server;
@@ -41,6 +43,12 @@ pub struct Machine {
     host: String
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct DownloadMedia{
+    media_type : String,
+    url : String
+}
+
 #[get("/bookmarks")]
 fn get_bookmarks() -> String {
     let conn = create_conn();
@@ -53,10 +61,30 @@ fn get_bookmarks_by_page(page : i64,max_page : i64) -> String {
     serde_json::to_string(&get_bookmarks_paged(&conn,page*max_page,max_page)).unwrap()
 }
 
+#[post("/downloader/video", format="application/json", data="<media>")]
+fn post_downloader_video(media : Json<DownloadMedia>) -> String {
+    let app_config : AppConfig = load_app_configuration();
+    let media_obj = media.deref();
+
+    match media_obj.media_type.as_str() {
+        "Youtube" => {
+            let movie = YoutubeDownloader {
+                url: String::from(media_obj.url.as_str()),
+                path: app_config.configs.folders.mediafolder
+            };
+
+            movie.download();
+
+            String::from("Downloaded youtube video")
+        },
+        _   => String::from("Media type not found")
+    }
+}
+
 #[post("/automation/reboot", format="application/json", data="<machine>")]
-fn get_automation_reboot_host(machine : Json<Machine>) -> String {
+fn post_automation_reboot_host(machine : Json<Machine>) -> String {
     let app_config = load_app_configuration();
-    let ref machine_obj: &Machine = machine.deref();
+    let machine_obj = machine.deref();
 
     let mut founded : bool = false;
 
@@ -97,7 +125,8 @@ fn main() {
         get_about,
         get_bookmarks,
         get_bookmarks_by_page,
-        get_automation_reboot_host
+        post_automation_reboot_host,
+        post_downloader_video
     ];
 
     let env_type : Environment = match app_configs.configs.webserver.env.as_str() {
