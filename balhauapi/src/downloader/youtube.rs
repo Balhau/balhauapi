@@ -9,7 +9,7 @@ pub struct YoutubeDownloader {
 /**
 * Implement the trait Downloadable for the YoutubeDownloader struct
 */
-impl Downloadable<bool> for YoutubeDownloader {
+impl Downloadable for YoutubeDownloader {
     fn download(&self) -> bool {
         println!("Fetching video: {} into {}", self.url, self.path);
 
@@ -30,7 +30,7 @@ impl Downloadable<bool> for YoutubeDownloader {
             .output().expect(&self.url);
         //Print command executed
         println!("Command executed: {}", command);
-        println!("Result: {:?}", output.stdout);
+        println!("Result: {}", String::from_utf8(output.stdout).unwrap().as_str());
         true
     }
 }
