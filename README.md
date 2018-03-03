@@ -75,4 +75,7 @@ The services currently enabled by the weserver are defined bellow
   
         curl -H "Content-Type: application/json" -X POST -d '{ "host" : "pi1" }' http://localhost:5000/automation/reboot
     
+  * Download youtube video
+  
+        curl -H "Content-Type: application/json" -X POST -d '{ "media_type" : "Youtube", "url":"Cenas" }' http://localhost:5000/downloader/video
     
