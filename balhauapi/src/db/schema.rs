@@ -19,3 +19,4 @@ fn get_db_url(conf_app : &AppConfig) -> String  {
 // I need to fix this as soon as possible to avoid duplication and scattering of configurations.
 // :/
 infer_schema!("dotenv:DATABASE_URL");
+

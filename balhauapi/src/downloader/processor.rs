@@ -24,6 +24,7 @@ pub trait Processor {
     fn process(&self, item : Downloaders);
 }
 
+
 impl DownloaderProcessor {
     pub fn new() -> DownloaderProcessor {
         let (tx,rx) = channel();
