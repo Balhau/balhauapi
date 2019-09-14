@@ -1,10 +1,10 @@
 extern crate clap;
 extern crate select;
 extern crate balhauapi;
-//extern crate rusqlite;
+extern crate rusqlite;
 
 use clap::App;//, Arg, SubCommand};
-//use rusqlite::Connection;
+use rusqlite::{params, Connection, Row};
 use balhauapi::db::ereader::models::Item;
 use balhauapi::db::api::save_ereader_item;
 use balhauapi::db::api::create_conn;
@@ -12,7 +12,7 @@ use balhauapi::db::api::truncate_ereaderitem_table;
 
 
 fn main() {
-/*    let matches = App::new("EReader-cli")
+    let matches = App::new("EReader-cli")
         .about("
 ereader-cli is a command line interface for ereader metadata management.
 
@@ -33,19 +33,19 @@ Examples:
 
 
     let sel_iter = stmt.query_map(
-        &[],| row | {
-            Item{
+        params![],| _row : &Row | {
+            Result::Ok(Item{
                 id_item: 0,
-                f_id_item : row.get(0),
-                f_pages_number: row.get_checked(7).unwrap_or(Option::from(0)),
-                f_current_page: row.get_checked(8).unwrap_or(Option::from(0)),
-                f_last_read: row.get_checked(9).unwrap_or(Option::from(0)),
-                f_publication_date: row.get_checked(10).unwrap_or(Option::from(String::from(""))),
-                f_publisher: row.get_checked(11).unwrap_or(Option::from(String::from(""))),
-                f_title: row.get_checked(12).unwrap_or(Option::from(String::from(""))),
-                f_description: row.get_checked(14).unwrap_or(Option::from(String::from(""))),
-                f_author_id: row.get_checked(22).unwrap_or(Option::from(0))
-            }
+                f_id_item : _row.get(0)?,
+                f_pages_number: _row.get(7)?,
+                f_current_page: _row.get(8)?,
+                f_last_read: _row.get(9)?,
+                f_publication_date: _row.get(10)?,
+                f_publisher: _row.get(11)?,
+                f_title: _row.get(12)?,
+                f_description: _row.get(14)?,
+                f_author_id: _row.get(22)?
+            })
         }
     ).unwrap();
 
@@ -60,5 +60,4 @@ Examples:
     }
 
     println!("{:?}",matches.usage.unwrap())
-    */
 }
