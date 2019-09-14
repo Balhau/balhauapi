@@ -1,19 +1,17 @@
-#![feature(plugin)]
-#![plugin(rocket_codegen)]
-
+#![feature(proc_macro_hygiene, decl_macro)]
 
 extern crate diesel;
 extern crate rocket_contrib;
 extern crate serde_json;
-#[macro_use]
-extern crate serde_derive;
+
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate rocket;
 
 extern crate balhauapi;
-extern crate rocket;
 
 use rocket::fairing::AdHoc;
 use rocket::State;
-use rocket_contrib::Json;
+use rocket_contrib::json::Json;
 use rocket::config::{Config, Environment};
 
 use std::sync::Mutex;
@@ -113,7 +111,6 @@ fn post_automation_reboot_host(machine: Json<Machine>) -> String {
 
 #[get("/about")]
 fn get_about() -> String {
-    //Json(vec![t1,t2])
     let t1 = About {
         name: String::from("Kie"),
         email: String::from("bruce@wayne.com"),
@@ -150,10 +147,10 @@ fn main() {
         .finalize().expect("Error building webserver configuration object");
 
 
-    rocket::custom(rocket_config, app_configs.configs.webserver.log)
+    rocket::custom(rocket_config)
         .mount("/", routes)
         .manage(Mutex::new(DownloaderProcessor::new()))
-        .attach(AdHoc::on_response(|_, resp| {
+        .attach(AdHoc::on_response("Dummy",|req, resp| {
             resp.set_raw_header("Access-Control-Allow-Origin", "*");
         }))
         .launch();
