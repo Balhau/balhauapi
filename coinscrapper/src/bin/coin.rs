@@ -26,6 +26,7 @@ fn process_markets_info(producer : &mut Producer) {
     assert!(resp.status().is_success());
     let body = resp.text().unwrap();
 
+
     let markets_tick : Vec<CoinMarketEntry> = serde_json::from_str(body.as_str()).unwrap();
     let mut buf = String::with_capacity(2);
 

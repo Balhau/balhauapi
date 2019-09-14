@@ -1,10 +1,10 @@
 extern crate clap;
 extern crate select;
 extern crate balhauapi;
-extern crate rusqlite;
+//extern crate rusqlite;
 
 use clap::App;//, Arg, SubCommand};
-use rusqlite::Connection;
+//use rusqlite::Connection;
 use balhauapi::db::ereader::models::Item;
 use balhauapi::db::api::save_ereader_item;
 use balhauapi::db::api::create_conn;
@@ -12,7 +12,7 @@ use balhauapi::db::api::truncate_ereaderitem_table;
 
 
 fn main() {
-    let matches = App::new("EReader-cli")
+/*    let matches = App::new("EReader-cli")
         .about("
 ereader-cli is a command line interface for ereader metadata management.
 
@@ -60,4 +60,5 @@ Examples:
     }
 
     println!("{:?}",matches.usage.unwrap())
+    */
 }
