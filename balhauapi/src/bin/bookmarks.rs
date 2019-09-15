@@ -23,18 +23,19 @@ fn read_bookmark_file_chrome(path: &str) -> String {
     contents
 }
 
-fn main() {
-    let matches = App::new("Bookmarks-cli")
-        .about("
-bookmarks-cli is a command line interface for bookmarks management.
 
-Examples:
+
+fn main() {
+    let description : &str = r#"
+    bookmarks-cli is a command line interface for bookmarks management.
+
+    Examples:
 
     Load a list of bookmarks from google chrome
         bookmarks save -t chrome bookmarks.html
-
-"
-        )
+"#;
+    let matches = App::new("Bookmarks-cli")
+        .about(description)
         .author("Balhau <balhau@balhau.net>")
         .version("0.1")
         .arg(Arg::with_name("Config")

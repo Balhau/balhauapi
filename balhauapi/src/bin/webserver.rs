@@ -57,7 +57,8 @@ pub struct DownloadMedia {
 #[get("/bookmarks")]
 fn get_bookmarks() -> String {
     let conn = create_conn();
-    serde_json::to_string(&get_all_bookmarks(&conn)).unwrap()
+    let b = get_all_bookmarks(&conn);
+    serde_json::to_string(&b).unwrap()
 }
 
 #[get("/bookmarks/<page>/<max_page>")]
