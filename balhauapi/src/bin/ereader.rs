@@ -12,18 +12,22 @@ use balhauapi::db::api::truncate_ereaderitem_table;
 
 
 fn main() {
-    let matches = App::new("EReader-cli")
-        .about("
+    let about : &str = r"#
 ereader-cli is a command line interface for ereader metadata management.
 
 Examples:
 
     Import metadata from cybook ocean eraeder sqlite database
         ereader import -t ocean <sqlitedb>
-"
-        )
-        .author("Balhau <balhau@balhau.net>")
-        .version("0.1")
+#";
+    let author : &str = "Balhau <balhau@balhau.net>";
+    let version : &str = "0.1";
+    let app_name : &str = "EReader-cli";
+
+    let matches = App::new(app_name)
+        .about(about)
+        .author(author)
+        .version(version)
         .get_matches();
     let path = "/home/vitorfernandes/Documents/ereader/card/system/library";
     let conn = Connection::open(path).unwrap();

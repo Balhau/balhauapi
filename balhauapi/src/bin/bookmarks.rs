@@ -34,6 +34,8 @@ fn main() {
     Load a list of bookmarks from google chrome
         bookmarks save -t chrome bookmarks.html
 "#;
+
+
     let matches = App::new("Bookmarks-cli")
         .about(description)
         .author("Balhau <balhau@balhau.net>")
