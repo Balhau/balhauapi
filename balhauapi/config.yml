@@ -2,19 +2,19 @@
 configs:
   remotes:
       - name: The Remote Name
-        host: <hostname> //--> 192.168.1.169:122
-        user: <ssh_user>
-        pass: <ssh_password>
+        host: 192.168.1.169:122
+        user: balhau
+        pass: gamma-007
   webserver:
     binding_host: 0.0.0.0
     port: 5000
     log: false
     env: prod
   database:
-    hostname: 192.168.1.14
+    hostname: 192.168.1.11
     schema: postgres
-    port: 5432
-    user: <posgres_user>
-    pass: <posgres_password>
+    port: 32470
+    user: postgres
+    pass: postgres
   folders:
     mediafolder: /tmp/whynot

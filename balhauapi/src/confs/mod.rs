@@ -5,6 +5,9 @@ use dotenv::dotenv;
 use std::fs::File;
 use std::io::prelude::*;
 
+pub mod envs;
+pub mod msgs;
+
 
 const CONFIG_FILE_ENV: &str = "CONFIG_FILE_ENV";
 

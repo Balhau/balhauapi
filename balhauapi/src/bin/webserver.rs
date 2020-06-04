@@ -23,6 +23,7 @@ use balhauapi::downloader::processor::Processor;
 use balhauapi::downloader::Downloaders;
 use balhauapi::db::api::*;
 use balhauapi::confs::AppConfig;
+use balhauapi::confs::msgs::Messages;
 use balhauapi::automation::remotecommand::reboot_server;
 use balhauapi::confs::load_app_configuration;
 use std::ops::Deref;
@@ -125,7 +126,7 @@ fn get_about() -> String {
 
 fn main() {
     let app_configs: AppConfig = load_app_configuration();
-    println!("Configurations:\n {:?}", &app_configs);
+    //println!("Configurations:\n {:?}", &app_configs);
 
     let routes = routes![
         index,
@@ -141,11 +142,10 @@ fn main() {
         _ => Environment::Staging
     };
 
-
     let rocket_config = Config::build(env_type)
         .address(app_configs.configs.webserver.binding_host)
         .port(app_configs.configs.webserver.port)
-        .finalize().expect("Error building webserver configuration object");
+        .finalize().expect(Messages::ERROR_SERVER_CONFIGS);
 
 
     rocket::custom(rocket_config)

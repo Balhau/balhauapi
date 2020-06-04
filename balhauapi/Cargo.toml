@@ -8,7 +8,7 @@ authors = ["Balhau <balhau@balhau.net>"]
 diesel = { version = "1.4.2", features = ["postgres"] }
 diesel_infer_schema = { version = "1.4.0", features = ["postgres"] }
 dotenv = "0.10"
-rocket = "0.4.2"
+rocket = "0.4.5"
 rocket_codegen = "0.4.2"
 rocket_contrib = "0.4.2"
 serde = "1.0"
