@@ -12,15 +12,6 @@ fn t4(val: f64) -> f64 {
     1.0 - C2 * x2 + C4 * x4
 }
 
-#[bench]
-fn bench_cos_MAX_ITER_floats(b: &mut Bencher) {
-    b.iter(|| {
-        // use `test::black_box` to prevent compiler optimizations from disregarding
-        // unused values
-        test::black_box((0 .. MAX_ITER).map(|v| ((MAX_ITER as f64)/(MAX_ITER+v) as f64).cos()));
-    });
-}
-
 fn main() {
     let x: f64 = 0.0;
 

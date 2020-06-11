@@ -13,4 +13,4 @@ mod tests {
 }
 
 
-pub mod coinmarketcap;
+//pub mod coinmarketcap;

@@ -11,5 +11,5 @@ fn get_db_url(conf_app : &AppConfig) -> String  {
 
 }
 
-infer_schema!("dotenv:DATABASE_URL");
+ infer_schema!("dotenv:DATABASE_URL");
 

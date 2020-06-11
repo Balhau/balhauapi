@@ -11,10 +11,10 @@ configs:
     log: false
     env: prod
   database:
-    hostname: 192.168.1.11
+    hostname: localhost
     schema: postgres
     port: 32470
     user: postgres
-    pass: postgres
+    pass: docker
   folders:
     mediafolder: /tmp/whynot

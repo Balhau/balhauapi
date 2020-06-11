@@ -1,32 +1,35 @@
 extern crate coinscrapper;
+extern crate kafka;
+extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
-extern crate serde;
-extern crate kafka;
 
-extern crate scraper;
 extern crate reqwest;
+extern crate scraper;
+extern crate tokio;
 
-use std::io::Read;
 use std::fmt::Write;
+use std::io::Read;
 use std::time::Duration;
 
 //Kafka dependencies
-use kafka::producer::{Producer,Record,RequiredAcks};
-
+use kafka::producer::{Producer, Record, RequiredAcks};
 
 //Local domains
-use coinscrapper::coinmarketcap::CoinMarketEntry;
+use tokio::runtime::Runtime;
 
 
-fn process_markets_info(producer : &mut Producer) {
+async fn process_markets_info(producer : &mut Producer) -> Result<(),reqwest::Error> {
 
     let c_market_link="https://api.coinmarketcap.com/v1/ticker";
-    let mut resp = reqwest::get(c_market_link).unwrap();
-    assert!(resp.status().is_success());
-    let body = resp.text().unwrap();
+
+    let body = reqwest::get(c_market_link)
+        .await?
+        .text()
+        .await?;
 
 
+        /*
     let markets_tick : Vec<CoinMarketEntry> = serde_json::from_str(body.as_str()).unwrap();
     let mut buf = String::with_capacity(2);
 
@@ -36,46 +39,27 @@ fn process_markets_info(producer : &mut Producer) {
         buf.clear();
     });
 
+    */
+
     println!("Processed markets");
+
+    Ok(())
 }
 
-fn main() {
-    let js_str = r#"[{
-    "id": "qora",
-"name": "Qora",
-"symbol": "QORA",
-"rank": "1301",
-"price_usd": "0.296948",
-"price_btc": "0.00001774",
-"24h_volume_usd": "380.547",
-"market_cap_usd": null,
-"available_supply": null,
-"total_supply": "10000000000.0",
-"max_supply": null,
-"percent_change_1h": "-0.48",
-"percent_change_24h": "-3.02",
-"percent_change_7d": "13.96",
-"last_updated": "1515325142"
-}]
-"#;
-
-    let js_str_parsed = js_str.replace("24h_volume_usd", "_24h_volume_usd");
+async fn async_main() -> Result<(),reqwest::Error> {
+    /*
+    let js_str_parsed = JS_PAYLOAD.replace("24h_volume_usd", "_24h_volume_usd");
     let s: Vec<CoinMarketEntry> = serde_json::from_str(js_str_parsed.as_str()).unwrap();
     println!("Entry: {:?}", s);
 
     let c_market_link="https://api.coinmarketcap.com/v1/ticker";
 
-    let mut resp = reqwest::get(c_market_link).unwrap();
-
-    assert!(resp.status().is_success());
+    let body = reqwest::get(c_market_link)
+        .await?
+        .text()
+        .await?;
 
     //println!("{:?}",resp);
-
-    let body = resp.text().unwrap();
-
-    let markets_tick : Vec<CoinMarketEntry> = serde_json::from_str(body.as_str()).unwrap();
-
-    println!("Markets: {}",markets_tick.len());
 
     //Create kafka producer
     let mut producer =
@@ -87,7 +71,6 @@ fn main() {
 
     /*
     let mut buf = String::with_capacity(2);
-
     let vec1 = markets_tick.iter().for_each(move |market|{
         let _ = write!(&mut buf,"{:?}",market);
         producer.send(&Record::from_value("coin.markets", buf.as_bytes())).unwrap();
@@ -110,4 +93,11 @@ fn main() {
 
     //let res = client.get("https://api.coinmarketcap.com/v1/ticker/".parse().unwrap())
     //    .get_result().unwrap();
+    */
+    Ok(())
+}
+
+fn main() {
+    let mut r = Runtime::new().expect("Failed to Load Tokio Runtime");
+    r.block_on(async_main());
 }
