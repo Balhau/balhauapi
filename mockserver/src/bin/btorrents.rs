@@ -1,24 +1,49 @@
-use rweb::*;
-use serde::Serialize;
-use mockserver::yts::mocks::mockYtsMovies;
+use actix_cors::Cors;
+use actix_web::{http, web, App, HttpRequest, HttpResponse, HttpServer, Responder, Result};
+use actix_web::middleware::Logger;
+use http::Method;
+use log::Level;
+
+
+use mockserver::yts::data::MovieResponse;
 use mockserver::yts::data::YtsResponse;
+use mockserver::yts::mocks::mockYtsMovies;
+use serde::{Deserialize, Serialize};
 
-#[get("/")]
-fn index() -> String {
-    String::from("content type will be 'text/plain' as you return String")
+
+async fn ystMovies(name: web::Path<String>) -> Result<HttpResponse> {
+    Ok(
+        HttpResponse::Ok()
+        .header("Access-Control-Allow-Origin","*")
+        .header("Strict-Transport-Security", "max-age=31556926; includeSubDomains; preload")
+        .json(mockYtsMovies())
+    )
 }
 
-#[get("/ws/yts/torrents/{page}")]
-fn movies(page: String) -> Json<YtsResponse> {
-    Json::from(mockYtsMovies())
+async fn index(req: HttpRequest) -> &'static str {
+    "Hello world"
 }
 
-#[tokio::main]
-async fn main() {
-    let (_spec, filter) = openapi::spec().build(|| index().or(movies()));
-
-    //serve(filter);
-    // Use the code below to run server.
-    //
-    serve(filter).run(([127, 0, 0, 1], 3030)).await;
+#[actix_rt::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        std::env::set_var("RUST_LOG", "actix_web=debug");
+        env_logger::init();
+        App::new()
+            .wrap(Logger::default())
+            .wrap(Logger::new("%a %{User-Agent}i"))
+            .wrap(
+                Cors::new() // <- Construct CORS middleware builder
+                    .send_wildcard()
+                    .allowed_methods(vec!["GET", "POST","OPTIONS","PUT","DELETE","PATCH"])
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600)
+                    .finish(),
+            )
+            .route("/ws/yts/torrents/{name}", web::get().to(ystMovies))
+    })
+    .bind("127.0.0.1:3030")?
+    .run()
+    .await
 }
